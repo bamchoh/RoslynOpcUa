@@ -3,22 +3,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using OpcUa;
 
-void OpcUaRead(OpcUaClient opcua)
+void OpcUaRead(OpcUaClient opcua, string[] variables)
 {
-    var values = opcua.Read(new string[] {
-        var01,
-        var02,
-        var03,
-        var04,
-        var05,
-        var06,
-        var07,
-        var08,
-        var09,
-        var10,
-        var11,
-        var12,
-    });
+    var values = opcua.Read(variables);
 
     foreach (var key in values.Keys)
     {
@@ -45,9 +32,24 @@ var var10 = "ns=2;s=Scalar_Static_Double";
 var var11 = "ns=2;s=Scalar_Static_Float";
 var var12 = "ns=2;s=Scalar_Static_String";
 
-var opcua = new OpcUaClient();
+var variables = new string[] {
+    var01,
+    var02,
+    var03,
+    var04,
+    var05,
+    var06,
+    var07,
+    var08,
+    var09,
+    var10,
+    var11,
+    var12,
+};
 
-opcua.Open("opc.tcp://localhost:62541/Quickstarts/ReferenceServer");
+var opcua = new OpcUaClient(@"C:\Users\bamch\source\repos\RoslynOpcUa\Opc.Ua.Client.Roslyn.Config.xml");
+
+opcua.Open("opc.tcp://localhost:62541/Quickstarts/ReferenceServer", true);
 
 opcua.Write(new Dictionary<string, object> {
   { var01, true },
@@ -64,7 +66,7 @@ opcua.Write(new Dictionary<string, object> {
   { var12, "abcdefghijklmnopqrstuvwxyz" },
 });
 
-OpcUaRead(opcua);
+OpcUaRead(opcua, variables);
 
 opcua.Write(new Dictionary<string, object> {
   { var01, false },
@@ -81,4 +83,6 @@ opcua.Write(new Dictionary<string, object> {
   { var12, "ABCDEFGHIJKLMNOPQRSTUVWXYZ" },
 });
 
-OpcUaRead(opcua);
+OpcUaRead(opcua, variables);
+
+opcua.Close();
